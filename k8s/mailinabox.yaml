@@ -16,10 +16,10 @@ metadata:
   name: mailinabox
 spec:
   ports:
-  - name: "80"
-    port: 80
+  - name: "8080"
+    port: 8080
     protocol: TCP
-    targetPort: 80
+    targetPort: 8080
   selector:
     app: mailinabox
   type: ClusterIP
@@ -46,7 +46,7 @@ spec:
       - image: kbudde/mailinabox-dnsapi:v0
         name: mailinabox
         ports:
-        - containerPort: 80
+        - containerPort: 8080
         envFrom:
           - secretRef:
               name: mailinabox
