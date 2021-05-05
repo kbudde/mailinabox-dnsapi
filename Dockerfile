@@ -6,6 +6,7 @@ ARG VERSION=""
 ARG BRANCH=""
 ARG COMMIT=""
 
+RUN apk add --no-cache ca-certificates
 RUN mkdir /user && \
     echo 'nobody:x:65534:65534:nobody:/:' > /user/passwd && \
     echo 'nobody:x:65534:' > /user/group
@@ -28,8 +29,9 @@ RUN CGO_ENABLED=0 go build \
 
 FROM scratch AS final
 LABEL maintainer="Kris@budd.ee"
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /user/group /user/passwd /etc/
 COPY --from=builder /app /app
-EXPOSE 80
+EXPOSE 8080
 USER nobody:nobody
 ENTRYPOINT ["/app"]
