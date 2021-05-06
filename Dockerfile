@@ -22,7 +22,6 @@ RUN CGO_ENABLED=0 go build \
     -installsuffix 'static' \
     -ldflags "-X main.Revision=${COMMIT} \
         -X main.Branch=${BRANCH} \
-        -X main.Version=${VERSION} \
         -X main.BuildDate=$(date -u ""+%Y%m%d-%H:%M:%S"")" \
     -o /app .
 

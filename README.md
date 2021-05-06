@@ -6,7 +6,63 @@ All you have to do is to point traffic with a [httpreq (lego)](https://go-acme.g
 
 You can find an example deployment file in [k8s/mailinabox.yaml](k8s/mailinabox.yaml)
 
-## 📝 Todos
 
-- [ ] Create example traefik configuration
+## traefik configuration snippets
+
+### traefik deployment
+
+```
+...
+containers:
+- image: traefik:v2.4
+  name: traefik
+  env:
+    - name: HTTPREQ_ENDPOINT
+      value: http://mailinabox:8080
+```
+
+### traefik config file
+```
+...
+certificatesResolvers:
+  myresolver:
+    acme:
+      email: "you@yourdomain.com"
+      storage: "acme.json"
+      dnsChallenge:
+        provider: httpreq
+```
+### traefik ingress
+
+```
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pihole-https
+  namespace: pihole
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: myresolver
+
+spec:
+  tls:
+  - hosts:
+      - pihole.yourdomain.com
+  rules:
+  - host: pihole.yourdomain.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: pihole
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+```
+
+
+
 

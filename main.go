@@ -16,7 +16,6 @@ import (
 var (
 	Revision  = ""
 	Branch    = ""
-	Version   = ""
 	BuildDate = ""
 )
 
@@ -38,8 +37,8 @@ func (l legoHttpReq) Validate() error {
 }
 
 func main() {
-	log.Printf("Starting application. branch=%s revision=%s version=%s builddate=%s",
-		Branch, Revision, Version, BuildDate)
+	log.Printf("Starting application. branch=%s revision=%s builddate=%s",
+		Branch, Revision, BuildDate)
 
 	a, err := apiFromEnv()
 	if err != nil {
