@@ -28,6 +28,12 @@ type legoHttpReq struct {
 }
 
 func (l legoHttpReq) Validate() error {
+	if l.FQDN == "" {
+		return errors.New("Invalid request. fqdn must not be empty")
+	}
+	if l.Value == "" {
+		return errors.New("Invalid request. value must not be empty")
+	}
 	return nil
 }
 
@@ -35,9 +41,7 @@ func main() {
 	log.Printf("Starting application. branch=%s revision=%s version=%s builddate=%s",
 		Branch, Revision, Version, BuildDate)
 
-	a := apiFromEnv()
-	// baseURL: "https://box.budd.ee/admin/dns/custom/",
-	err := a.Validate()
+	a, err := apiFromEnv()
 	if err != nil {
 		log.Fatalf("invalid configuration: %s\n", err.Error())
 	}
@@ -51,13 +55,13 @@ type api struct {
 	user, pass string
 }
 
-func apiFromEnv() api {
+func apiFromEnv() (api, error) {
 	a := api{
 		baseURL: os.Getenv("MAILINABOX_URL"),
 		user:    os.Getenv("MAILINABOX_USER"),
 		pass:    os.Getenv("MAILINABOX_PASSWORD"),
 	}
-	return a
+	return a, a.Validate()
 }
 
 func (a api) Validate() error {
@@ -89,7 +93,7 @@ func (a api) RequestHandler() func(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		fmt.Printf("request successfully finished. action=%s domain=%s duration=%.3fs\n", l.Action, l.FQDN, time.Since(start).Seconds())
+		fmt.Printf("level=info msg='request successfully finished.' request=%s action=%s domain=%s duration=%.3fs\n", r.RequestURI, l.Action, l.FQDN, time.Since(start).Seconds())
 
 	}
 }
@@ -104,18 +108,17 @@ func (a api) processIncomingRequest(r *http.Request) (legoHttpReq, error) {
 		return l, errors.New("request with empty body not allowed")
 	}
 
-	if r.RequestURI != "/cleanup" {
-		l.Action = "DELETE"
-	} else if r.RequestURI != "/present" {
-		l.Action = "POST"
-	} else {
-		return l, fmt.Errorf("wrong URI: %s", r.RequestURI)
-
-	}
-
 	err := json.NewDecoder(r.Body).Decode(&l)
 	if err != nil {
 		return l, fmt.Errorf("json decoding error: %w", err)
+	}
+
+	if r.RequestURI == "/cleanup" {
+		l.Action = "DELETE"
+	} else if r.RequestURI == "/present" {
+		l.Action = "POST"
+	} else {
+		return l, fmt.Errorf("wrong URI: %s", r.RequestURI)
 	}
 
 	return l, l.Validate()
