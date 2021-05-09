@@ -43,10 +43,19 @@ spec:
         app: mailinabox
     spec:
       containers:
-      - image: kbudde/mailinabox-dnsapi:v0
+      - image: kbudde/mailinabox-dnsapi:main
         name: mailinabox
         ports:
-        - containerPort: 8080
+        - name: http
+          containerPort: 8080
+        readinessProbe:
+          httpGet:
+            port: http
+            path: /healthz
+        livenessProbe:
+          httpGet:
+            port: http
+            path: /healthz
         envFrom:
           - secretRef:
               name: mailinabox
