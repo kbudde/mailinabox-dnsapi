@@ -1,0 +1,101 @@
+project_name: mailinabox-dnsapi
+builds:
+  -
+    id: mailinabox-dnsapi
+    # Custom build tags templates.
+    # Default is empty.
+    tags:
+    #  - osusergo
+      - netgo
+      - static_build
+    #  - feature
+
+    env:
+      - CGO_ENABLED=0
+
+    targets:
+      - windows_amd64
+      - linux_arm64
+      - linux_amd64
+      - darwin_arm64
+      - darwin_amd64
+      - linux_arm_6
+      - linux_arm_7
+
+
+checksum:
+  algorithm: sha256
+
+dockers:
+- goos: linux
+  goarch: amd64
+  image_templates:
+  - "kbudde/mailinabox-dnsapi:linux-amd64-{{.ShortCommit}}"
+  dockerfile: Dockerfile
+  ids:
+  - "mailinabox-dnsapi"
+  use: buildx
+  build_flag_templates:
+  - "--label=org.opencontainers.image.created={{.Date}}"
+  - "--label=org.opencontainers.image.title={{.ProjectName}}"
+  - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+  - "--label=org.opencontainers.image.version={{.Version}}"
+  - "--platform=linux/amd64"
+
+- goos: linux
+  goarch: arm
+  goarm: 6
+  image_templates:
+  - "kbudde/mailinabox-dnsapi:linux-arm6-{{.ShortCommit}}"
+  dockerfile: Dockerfile
+  ids:
+  - mailinabox-dnsapi
+  use: buildx
+  build_flag_templates:
+  - "--label=org.opencontainers.image.created={{.Date}}"
+  - "--label=org.opencontainers.image.title={{.ProjectName}}"
+  - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+  - "--label=org.opencontainers.image.version={{.Version}}"
+  - "--platform=linux/arm/v7"
+
+- goos: linux
+  goarch: arm
+  goarm: 7
+  image_templates:
+  - "kbudde/mailinabox-dnsapi:linux-arm7-{{.ShortCommit}}"
+  dockerfile: Dockerfile
+  ids:
+  - "mailinabox-dnsapi"
+  use: buildx
+  build_flag_templates:
+  - "--label=org.opencontainers.image.created={{.Date}}"
+  - "--label=org.opencontainers.image.title={{.ProjectName}}"
+  - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+  - "--label=org.opencontainers.image.version={{.Version}}"
+  - "--platform=linux/arm/v7"
+   
+docker_manifests:
+-
+  name_template: kbudde/mailinabox-dnsapi:latest
+  image_templates:
+  - kbudde/mailinabox-dnsapi:linux-amd64-{{.ShortCommit}}
+  - kbudde/mailinabox-dnsapi:linux-arm6-{{.ShortCommit}}
+  - kbudde/mailinabox-dnsapi:linux-arm7-{{.ShortCommit}}
+- 
+  name_template: kbudde/mailinabox-dnsapi:{{ .Version }}
+  image_templates:
+  - kbudde/mailinabox-dnsapi:linux-amd64-{{.ShortCommit}}
+  - kbudde/mailinabox-dnsapi:linux-arm6-{{.ShortCommit}}
+  - kbudde/mailinabox-dnsapi:linux-arm7-{{.ShortCommit}}
+- 
+  name_template: kbudde/mailinabox-dnsapi:v{{ .Major }}
+  image_templates:
+  - kbudde/mailinabox-dnsapi:linux-amd64-{{.ShortCommit}}
+  - kbudde/mailinabox-dnsapi:linux-arm6-{{.ShortCommit}}
+  - kbudde/mailinabox-dnsapi:linux-arm7-{{.ShortCommit}}
+- 
+  name_template: kbudde/mailinabox-dnsapi:{{.ShortCommit}}
+  image_templates:
+  - kbudde/mailinabox-dnsapi:linux-amd64-{{.ShortCommit}}
+  - kbudde/mailinabox-dnsapi:linux-arm6-{{.ShortCommit}}
+  - kbudde/mailinabox-dnsapi:linux-arm7-{{.ShortCommit}}

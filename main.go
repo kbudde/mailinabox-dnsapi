@@ -14,7 +14,6 @@ var (
 func main() {
 	log.Printf("Starting application. branch=%s revision=%s builddate=%s",
 		Branch, Revision, BuildDate)
-
 	a, err := initApp()
 	if err != nil {
 		log.Fatalf("invalid configuration: %s\n", err.Error())
