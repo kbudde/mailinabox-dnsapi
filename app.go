@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -72,6 +73,7 @@ func (a app) processIncomingRequest(r *http.Request) (legoHttpReq, error) {
 	if err != nil {
 		return l, fmt.Errorf("json decoding error: %w", err)
 	}
+	l.FQDN = strings.TrimSpace(l.FQDN)
 
 	if r.RequestURI == "/cleanup" {
 		l.Action = "DELETE"

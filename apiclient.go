@@ -38,7 +38,7 @@ func (a apiClient) Validate() error {
 }
 
 func (a apiClient) createTxtRecord(l legoHttpReq) error {
-	url := fmt.Sprintf("%s%s/txt", a.baseURL, strings.TrimPrefix(strings.TrimSuffix(l.FQDN, "."), "\n"))
+	url := fmt.Sprintf("%s%s/txt", a.baseURL, strings.TrimSuffix(l.FQDN, "."))
 
 	payload := strings.NewReader(l.Value)
 
