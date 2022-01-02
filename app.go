@@ -73,13 +73,13 @@ func (a app) processIncomingRequest(r *http.Request) (legoHttpReq, error) {
 	if err != nil {
 		return l, fmt.Errorf("json decoding error: %w", err)
 	}
-	fmt.Printf("unchanged FQDN='%s'", l.FQDN)
+	log.Printf("unchanged FQDN='%s'", l.FQDN)
 	l.FQDN = strings.TrimSpace(l.FQDN)
-	fmt.Printf("trimspace FQDN='%s'", l.FQDN)
+	log.Printf("trimspace FQDN='%s'", l.FQDN)
 	l.FQDN = strings.TrimPrefix(l.FQDN, "\n")
-	fmt.Printf("trimprefix FQDN='%s'", l.FQDN)
+	log.Printf("trimprefix FQDN='%s'", l.FQDN)
 	l.FQDN = strings.TrimSuffix(l.FQDN, ".")
-	fmt.Printf("trimsuff FQDN='%s'", l.FQDN)
+	log.Printf("trimsuff FQDN='%s'", l.FQDN)
 
 	if r.RequestURI == "/cleanup" {
 		l.Action = "DELETE"
