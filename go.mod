@@ -1,3 +1,3 @@
 module github.com/kbudde/mailinabox-dnsapi
 
-go 1.18
+go 1.19
